@@ -2,19 +2,30 @@
 
 set -euo pipefail
 
-filter=filter.txt
-original=domains.txt
-domains=domains-new.txt
-filtered=filtered.txt
+filter='filter.txt'
+original='domains.txt'
+domains='domains-new.txt'
+filtered='filtered.txt'
 
 cp $original $domains
 if [[ -f $filtered ]]; then
 	rm $filtered
 fi
 
+echo Filtering...
+
 while read str; do
-	grep "$str" $domains >> $filtered
+	# grep will return code "1" if not found matches
+	to_filter=$(grep "$str" $domains || :)
+	if [[ -z "$to_filter" ]]; then
+		continue
+	fi
+	echo "$str $(echo "$to_filter" | wc -l)"
+
+	echo "$to_filter" >> $filtered
 
 	grep -v "$str" $domains > .$domains
 	mv .$domains $domains
 done < $filter
+
+echo Done filtering
