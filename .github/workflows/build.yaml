@@ -20,9 +20,6 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: python main.py
-      - run: |
-          mkdir public
-          mv ru.acl public
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
