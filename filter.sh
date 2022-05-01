@@ -6,18 +6,20 @@ filter='filter.txt'
 original='domains.txt'
 domains='domains-new.txt'
 filtered='filtered.txt'
+unfilter='unfilter.txt'
 
 cp $original $domains
 if [[ -f $filtered ]]; then
 	rm $filtered
 fi
 
-echo [filter] start
+echo [filter] start, $(wc -l < $filter) filters
 
 while read str; do
 	# grep will return code "1" if not found matches
 	to_filter=$(grep "$str" $domains || :)
 	if [[ -z "$to_filter" ]]; then
+		echo "[filter] \"$str\" has no matches"
 		continue
 	fi
 	echo "[filter] $str $(echo "$to_filter" | wc -l)"
@@ -27,5 +29,9 @@ while read str; do
 	grep -v "$str" $domains > .$domains
 	mv .$domains $domains
 done < $filter
+
+echo [filter] add unfilter rules
+
+cat "$unfilter" >> "$domains"
 
 echo [filter] done
