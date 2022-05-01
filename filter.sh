@@ -15,7 +15,7 @@ fi
 
 echo [filter] start, $(wc -l < $filter) filters
 
-while read str; do
+while read -r str; do
 	# grep will return code "1" if not found matches
 	to_filter=$(grep "$str" $domains || :)
 	if [[ -z "$to_filter" ]]; then

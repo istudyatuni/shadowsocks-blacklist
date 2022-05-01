@@ -27,7 +27,7 @@ anime
 anti
 apa
 apgo
-app.
+app\.
 apteka
 arbitr
 area
@@ -376,7 +376,7 @@ sim
 sir
 site
 skach
-sl.pt
+sl\.pt
 sla
 sli
 slot
@@ -422,9 +422,9 @@ tv
 tyh
 tyt
 tyumen
-tz.
+tz\.
 u-
-u.
+u\.
 v1
 vava
 vc
