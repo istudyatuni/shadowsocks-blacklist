@@ -2,11 +2,11 @@
 
 set -euo pipefail
 
-filter='filter.txt'
+filter='filters/main.txt'
 original='domains.txt'
 domains='domains-new.txt'
 filtered='filtered.txt'
-unfilter='unfilter.txt'
+unfilter='filters/unfilter.txt'
 
 cp $original $domains
 if [[ -f $filtered ]]; then
