@@ -12,7 +12,7 @@ if [[ -f $filtered ]]; then
 	rm $filtered
 fi
 
-echo Filtering...
+echo [filter] start
 
 while read str; do
 	# grep will return code "1" if not found matches
@@ -20,7 +20,7 @@ while read str; do
 	if [[ -z "$to_filter" ]]; then
 		continue
 	fi
-	echo "$str $(echo "$to_filter" | wc -l)"
+	echo "[filter] $str $(echo "$to_filter" | wc -l)"
 
 	echo "$to_filter" >> $filtered
 
@@ -28,4 +28,4 @@ while read str; do
 	mv .$domains $domains
 done < $filter
 
-echo Done filtering
+echo [filter] done

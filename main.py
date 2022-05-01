@@ -40,6 +40,7 @@ def convert_domains(domains: list[str]) -> list[str]:
 	return converted
 
 def main():
+	print('[main] fetch data')
 	domains = get_data()
 	write_list(ORIGINAL_FILE, domains)
 
@@ -49,7 +50,9 @@ def main():
 	filtered_domains = read_list(FILTERED_FILE)
 
 	mkdir(OUT_DIR)
+	print('[main] convert main domains')
 	write_list(os.path.join(OUT_DIR, 'ru.acl'), convert_domains(domains), acl=True)
+	print('[main] convert filtered domains')
 	write_list(os.path.join(OUT_DIR, 'ru-filtered.acl'), convert_domains(filtered_domains), acl=True)
 
 if __name__ == '__main__':
