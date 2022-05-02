@@ -1,5 +1,5 @@
 from os import mkdir, system
-from typing import Iterable
+from typing import Callable, Iterable
 import os.path
 import requests as req
 
@@ -27,7 +27,7 @@ def read_list(filename: str):
 
 # https://stackoverflow.com/a/71922468
 to_puny = lambda s: s.encode('idna').decode()
-def from_puny(s):
+def from_puny(s: str):
 	try:
 		return s.encode().decode('idna')
 	except UnicodeDecodeError:
@@ -36,17 +36,27 @@ def from_puny(s):
 		print(f'[decode] {e}:', s)
 		return s
 
-def convert_domains(domains: list[str]) -> list[str]:
+def convert_domains(domains: Iterable[str]) -> list[str]:
+	convert: Callable[[str], str] = lambda d: r'(?:^|\.)' + d.replace('.', r'\.') + '$'
+
 	uniq_domains = set(to_puny(d) for d in domains)
+	return list(map(convert, domains2tld(uniq_domains)))
 
-	converted: list[str] = []
-	for d in uniq_domains:
-		if d.startswith('*.'):
-			d = d.lstrip('*.')
-		d = d.replace('.', r'\.')
-		converted.append(r'(?:^|\.)' + d + '$')
+def domains2tld(domains: Iterable[str]) -> list[str]:
+	""" ['ex.com', 'm.ex.com'] -> ['ex.com'] """
+	tlds = set()
+	for d in domains:
+		parts = d.split('.')
 
-	return converted
+		# add IP
+		if parts[-1].isdigit():
+			tlds.add(d)
+			continue
+
+		# add TLD
+		tlds.add('.'.join(parts[-2:]))
+
+	return list(tlds)
 
 def main():
 	print('[main] fetch data')
@@ -62,9 +72,14 @@ def main():
 		mkdir(OUT_DIR)
 
 	print('[main] convert main domains')
-	write_list(os.path.join(OUT_DIR, 'ru.acl'), convert_domains(domains), acl=True)
+	domains = convert_domains(domains)
 	print('[main] convert filtered domains')
-	write_list(os.path.join(OUT_DIR, 'ru-filtered.acl'), convert_domains(filtered_domains), acl=True)
+	filtered_domains = convert_domains(filtered_domains)
+	# remove duplicates
+	filtered_domains = set(filtered_domains) - set(domains)
+
+	write_list(os.path.join(OUT_DIR, 'ru.acl'), domains, acl=True)
+	write_list(os.path.join(OUT_DIR, 'ru-filtered.acl'), filtered_domains, acl=True)
 
 if __name__ == '__main__':
 	main()
