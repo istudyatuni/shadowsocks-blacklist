@@ -14,6 +14,10 @@ DOMAINS_FILE = 'domains-new.txt'
 FILTERED_FILE = 'filtered.txt'
 
 get_data = lambda: req.get(DATA_URL).json()
+# def get_data():
+# 	with open('domains.json') as f:
+# 		import json
+# 		return json.load(f)
 
 def write_list(filename: str, data: Iterable[str], *, acl = False):
 	header = ACL_HEADER if acl else ''
